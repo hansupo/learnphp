@@ -1,40 +1,42 @@
 <?php
 
-class Cat {
-    use HasWeight;
-}
-
-class Gun {
-    use HasAmmo, HasWeight;
-}
-
-class Crossbow {
-    use HasAmmo, HasWeight;
-}
-
-
-
-
-trait HasAmmo {
-    public $ammo;
-}
-
-trait HasWeight {
-    private $weight;
-
-    public function getWeight() {
-        return $this->weight;
-    }
-
-    public function setWeight(int $weight) {
-        $this->weight = $weight;
-        if ($weight < 0) {
-            $this->weight = 0;
+// Prgrammer 1 code
+class Job {
+    public function task(Logger $logger) {
+        for ($i=0; $i < 10; $i++) {
+            // some task
+            $logger->log("Task $i done");
         }
     }
 }
 
-$cat = new Cat();
-$gun = new Gun();
-$crossbow = new Crossbow();
-var_dump($cat, $gun, $crossbow);
+class ConsoleLogger implements Logger {
+    public function log($text) {
+        echo "$text\n";
+    }
+}
+
+class FileLogger implements Logger {
+    public function log($text) {
+        $file = fopen("./log.txt", "a");
+        fwrite($file, "$text\n");
+        fclose($file);
+    }
+}
+
+class NothingLogger implements Logger {
+    public function log($text) {
+    }
+}
+
+interface Logger {
+    public function log($text);
+}
+
+// Programmer 2 code
+
+$job = new Job();
+$logger = new ConsoleLogger();
+$logger = new FileLogger();
+$logger = new NothingLogger();
+$job->task($logger);
